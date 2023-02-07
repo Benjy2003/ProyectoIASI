@@ -23,7 +23,6 @@ public class Tablero
             
             dato = scanner.nextLine();
             this.precio = Integer.parseInt(dato);
-            
             for (int i = 0; i < N; i++) 
             {
                 dato = scanner.nextLine();
