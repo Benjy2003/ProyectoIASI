@@ -1,18 +1,22 @@
 import java.io.FileReader;
 import java.util.Scanner;
 
-public class Tablero {
+public class Tablero 
+{
     private final static int N = 10;
     private int Mat[][];
     private int precio;
 
-    public Tablero() {
+    public Tablero() 
+    {
         Mat = new int[N][N];
         cargarDatos();
     }
 
-    private void cargarDatos() {
-        try {
+    private void cargarDatos() 
+    {
+        try 
+        {
             Scanner scanner = new Scanner(new FileReader("LABECOIN1.txt"));
             String dato;
             String[] numeros;
@@ -29,13 +33,16 @@ public class Tablero {
                 }
             }
             scanner.close();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.err.println("Error al leer el fichero");
         }
     }
 
-    public void mostrar() {
-        for (int i = 0; i < N; i++) {
+    public void mostrar()
+    {
+        for (int i = 0; i < N; i++) 
+        {
             for (int j = 0; j < N; j++) {
                 System.out.print(" " + Mat[i][j]);
             }
