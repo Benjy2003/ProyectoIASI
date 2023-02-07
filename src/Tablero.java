@@ -20,8 +20,10 @@ public class Tablero
             Scanner scanner = new Scanner(new FileReader("LABECOIN1.txt"));
             String dato;
             String[] numeros;
+            
             dato = scanner.nextLine();
             this.precio = Integer.parseInt(dato);
+            
             for (int i = 0; i < N; i++) 
             {
                 dato = scanner.nextLine();
