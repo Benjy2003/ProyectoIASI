@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileReader;
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class Tablero
     {
         try 
         {
-            Scanner scanner = new Scanner(new FileReader("LABECOIN1.txt"));
+            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN1.txt")));
             String dato;
             String[] numeros;
             
@@ -29,7 +30,6 @@ public class Tablero
                 numeros = dato.split(",");
                 for (int j = 0; j < N; j++) 
                 {
-                    
                     this.Mat[i][j] = Integer.parseInt(numeros[j]);
                 }
             }
@@ -51,4 +51,5 @@ public class Tablero
         }
         System.out.println(" " + this.precio);
     }
+    
 }
