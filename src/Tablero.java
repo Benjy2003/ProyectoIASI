@@ -40,16 +40,9 @@ public class Tablero
         }
     }
 
-    public void mostrar()
+    public void mostrar(Ventana v)
     {
-        for (int i = 0; i < N; i++) 
-        {
-            for (int j = 0; j < N; j++) {
-                System.out.print(" " + Mat[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println(" " + this.precio);
+        v.iniciarComponentes(Mat, precio);
     }
     
 }
