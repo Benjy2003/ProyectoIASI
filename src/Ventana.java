@@ -34,7 +34,7 @@ public class Ventana extends JFrame
 
             }
         }
-        label = new JLabel("Precio: " + Integer.toString(precio));
+        label = new JLabel("Precio: " + precio);
         label.setHorizontalAlignment(SwingConstants.LEFT);
         label.setFont(new Font("Arial", Font.PLAIN, 20));                  //Sitúa el texto a la izquierda.
         label.setBounds(10, 230, 100, 22);                        //Ponemos la posición que preferimos para la etiqueta
