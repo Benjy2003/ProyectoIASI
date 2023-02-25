@@ -4,10 +4,9 @@ public class Moneda {
     private double h;
     private int valor;
 
-    public Moneda(int x, int y, double h, int valor) {
+    public Moneda(int x, int y, int valor) {
         this.x = x;
         this.y = y;
-        this.h = h;
         this.valor = valor;
     }
 

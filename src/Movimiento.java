@@ -7,7 +7,8 @@ public enum Movimiento {
     ARRIBA_IZQUIERDA("AI", -1, -1),
     ARRIBA_DERECHA("AD", 1, -1),
     ABAJO_IZQUIERDA("BI", -1, 1),
-    ABAJO_DERECHA("BD", 1, 1);  
+    ABAJO_DERECHA("BD", 1, 1),
+    NINGUNO("N", 0, 0);  
     
     private String m;
     private int x;

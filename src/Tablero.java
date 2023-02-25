@@ -10,7 +10,6 @@ public class Tablero {
     private List<Moneda> monedas;
     private List<Estado> estados;
 
-
     private int precio; // Precio necesario para poder terminar.
     private int acumulado; // Acumulado actual.
 
@@ -25,6 +24,10 @@ public class Tablero {
         monedas = new ArrayList<>();
         estados = new ArrayList<>();
         cargarDatos();
+        for (int i = 0; i < monedas.size(); i++) {
+            monedas.get(i).setH(distanciaHeuristica(xInicial, yInicial, monedas.get(i).getX(), monedas.get(i).getY()));
+        }
+        estados.add(new Estado(xInicial, yInicial, acumulado, Movimiento.NINGUNO, distanciaHeuristica(xInicial, yInicial, xFinal, yFinal)));
     }
 
     private void cargarDatos() {
@@ -40,14 +43,13 @@ public class Tablero {
                 numeros = dato.split(",");
                 for (int j = 0; j < N; j++) {
                     switch (Integer.parseInt(numeros[j])) {
-
                         case 1:
                         case 2:
                         case 3:
                         case 4:
                         case 5:
                         case 6:
-                            monedas.add(new Moneda(j, i, distanciaHeuristica(j, i), Integer.parseInt(numeros[j])));
+                            monedas.add(new Moneda(j, i, Integer.parseInt(numeros[j])));
                             break;
 
                         case 7:
@@ -67,10 +69,8 @@ public class Tablero {
                 }
             }
             scanner.close();
-            estados.add(new Estado(xInicial, yInicial, acumulado, null, distanciaHeuristica(xInicial, yInicial)));
-            
         } catch (Exception e) {
-            System.err.println("Error al leer el fichero");
+            e.printStackTrace();
         }
     }
 
@@ -78,9 +78,10 @@ public class Tablero {
         v.iniciarComponentes(Mat, precio);
     }
 
-    public double distanciaHeuristica(int x, int y) {
+    public double distanciaHeuristica(int xOri, int yOri, int xDest, int yDest) {
+
         // h^2 = a^2 + b^2
-        double res = Math.pow(xFinal - x, 2) + Math.pow(yFinal - y, 2);
+        double res = Math.pow(xDest - xOri, 2) + Math.pow(yDest - yOri, 2);
         res = Math.sqrt(res);
         System.out.println("Distancia Heuristica: " + res);
         return res;
