@@ -6,8 +6,8 @@ public class Estado {
     private double h;
 
     public Estado(int x, int y, int acumulado, Movimiento m, double h) {
-        this.x = x + m.getX();
-        this.y = y + m.getY();
+        this.x = x;
+        this.y = y;
         this.m = m;
         this.acumulado = acumulado;
         this.h = h;

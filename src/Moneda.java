@@ -1,7 +1,8 @@
 public class Moneda {
     private int x;
     private int y;
-    private double h;
+    private double hRobot;
+    private double hFin;
     private int valor;
 
     public Moneda(int x, int y, int valor) {
@@ -18,8 +19,16 @@ public class Moneda {
         return y;
     }
 
-    public double getH() {
-        return h;
+    public double getHRobot() {
+        return hRobot;
+    }
+
+    public double getHFin() {
+        return hFin;
+    }
+
+    public double getH(){
+        return hRobot + hFin;
     }
 
     public int getValor() {
@@ -34,8 +43,12 @@ public class Moneda {
         this.y = y;
     }
 
-    public void setH(double h) {
-        this.h = h;
+    public void setHRobot(double h) {
+        this.hRobot = h;
+    }
+
+    public void setHFin(double h) {
+        this.hFin = h;
     }
 
     public void setValor(int valor) {

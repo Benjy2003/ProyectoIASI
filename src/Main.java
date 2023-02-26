@@ -8,6 +8,7 @@ public class Main
         Tablero t = new Tablero();
         Ventana v = new Ventana();
 
+        t.solve();
         t.mostrar(v);
     }
 }
