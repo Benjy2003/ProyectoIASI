@@ -29,11 +29,11 @@ public class Tablero {
         estados = new ArrayList<>();
         cargarDatos();
         for (int i = 0; i < monedas.size(); i++) {
-            monedas.get(i).setHRobot(distanciaHeuristica(xInicial, yInicial, monedas.get(i).getX(), monedas.get(i).getY()));
-            monedas.get(i).setHFin(distanciaHeuristica(monedas.get(i).getX(), monedas.get(i).getY(), xFinal, yFinal));
+            monedas.get(i).setH(distanciaHeuristica(xInicial, yInicial, monedas.get(i).getX(), monedas.get(i).getY()) - monedas.get(i).getValor());
+
         }
         Collections.sort(monedas, new ComparadorMoneda());
-        estados.add(new Estado(xInicial, yInicial, acumulado, Movimiento.NINGUNO,
+        estados.add(new Estado(xInicial, yInicial, acumulado, "Estado inicial",
                 distanciaHeuristica(xInicial, yInicial, xFinal, yFinal)));
         xAct = xInicial;
         yAct = yInicial;
@@ -95,107 +95,143 @@ public class Tablero {
         return res;
     }
 
+    public boolean existe(Estado e) {
+        for (Estado est : estados) {
+            if (est.getH() == e.getH())
+                if (est.getX() == e.getX())
+                    if (est.getY() == e.getY())
+                        if (est.getAcumulado() == e.getAcumulado())
+                            return true;
+        }
+        return false;
+    }
+
     public List<Estado> getPosiblesMonedas(Moneda m) {
         List<Estado> mov = new ArrayList<>();
+        Estado e;
         if (Mat[yAct - 1][xAct] != 9) {
-            mov.add(new Estado(xAct, yAct, acumulado, Movimiento.ARRIBA,
-                    distanciaHeuristica(xAct, yAct - 1, m.getX(), m.getY())));
+            e = new Estado(xAct, yAct - 1, acumulado, "A", distanciaHeuristica(xAct, yAct - 1, m.getX(), m.getY()));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct - 1][xAct + 1] != 9) {
-            mov.add(new Estado(xAct, yAct, acumulado, Movimiento.ARRIBA_DERECHA,
-                    distanciaHeuristica(xAct + 1, yAct - 1, m.getX(), m.getY())));
+            e = new Estado(xAct + 1, yAct - 1, acumulado, "AD",
+                    distanciaHeuristica(xAct + 1, yAct - 1, m.getX(), m.getY()));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct][xAct + 1] != 9) {
-            mov.add(new Estado(xAct, yAct, acumulado, Movimiento.DERECHA,
-                    distanciaHeuristica(xAct + 1, yAct, m.getX(), m.getY())));
+            e = new Estado(xAct + 1, yAct, acumulado, "D", distanciaHeuristica(xAct + 1, yAct, m.getX(), m.getY()));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct + 1][xAct + 1] != 9) {
-            mov.add(new Estado(xAct, yAct, acumulado, Movimiento.ABAJO_DERECHA,
-                    distanciaHeuristica(xAct + 1, yAct + 1, m.getX(), m.getY())));
+            e = new Estado(xAct + 1, yAct + 1, acumulado, "BD",
+                    distanciaHeuristica(xAct + 1, yAct + 1, m.getX(), m.getY()));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct + 1][xAct] != 9) {
-            mov.add(new Estado(xAct, yAct, acumulado, Movimiento.ABAJO,
-                    distanciaHeuristica(xAct, yAct + 1, m.getX(), m.getY())));
+            e = new Estado(xAct, yAct + 1, acumulado, "B", distanciaHeuristica(xAct, yAct + 1, m.getX(), m.getY()));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct + 1][xAct - 1] != 9) {
-            mov.add(new Estado(xAct, yAct, acumulado, Movimiento.ABAJO_IZQUIERDA,
-                    distanciaHeuristica(xAct - 1, yAct + 1, m.getX(), m.getY())));
+            e = new Estado(xAct - 1, yAct + 1, acumulado, "BI",
+                    distanciaHeuristica(xAct - 1, yAct + 1, m.getX(), m.getY()));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct][xAct - 1] != 9) {
-            mov.add(new Estado(xAct, yAct, acumulado, Movimiento.IZQUIERDA,
-                    distanciaHeuristica(xAct - 1, yAct, m.getX(), m.getY())));
+            e = new Estado(xAct - 1, yAct, acumulado, "I", distanciaHeuristica(xAct - 1, yAct, m.getX(), m.getY()));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct - 1][xAct - 1] != 9) {
-            mov.add(new Estado(xAct, yAct, acumulado, Movimiento.ARRIBA_IZQUIERDA,
-                    distanciaHeuristica(xAct - 1, yAct - 1, m.getX(), m.getY())));
+            e = new Estado(xAct - 1, yAct - 1, acumulado, "AI",
+                    distanciaHeuristica(xAct - 1, yAct - 1, m.getX(), m.getY()));
+            if (!existe(e))
+                mov.add(e);
         }
         return mov;
     }
 
     public List<Estado> getPosiblesSalida() {
         List<Estado> mov = new ArrayList<>();
+        Estado e;
         if (Mat[yAct - 1][xAct] != 9) {
-            mov.add(new Estado(xAct, yAct-1, acumulado, Movimiento.ARRIBA,
-                    distanciaHeuristica(xAct, yAct - 1, xFinal, yFinal)));
+            e = new Estado(xAct, yAct - 1, acumulado, "A", distanciaHeuristica(xAct, yAct - 1, xFinal, yFinal));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct - 1][xAct + 1] != 9) {
-            mov.add(new Estado(xAct+1, yAct-1, acumulado, Movimiento.ARRIBA_DERECHA,
-                    distanciaHeuristica(xAct + 1, yAct - 1, xFinal, yFinal)));
+            e = new Estado(xAct + 1, yAct - 1, acumulado, "AD",
+                    distanciaHeuristica(xAct + 1, yAct - 1, xFinal, yFinal));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct][xAct + 1] != 9) {
-            mov.add(new Estado(xAct+1, yAct, acumulado, Movimiento.DERECHA,
-                    distanciaHeuristica(xAct + 1, yAct, xFinal, yFinal)));
+            e = new Estado(xAct + 1, yAct, acumulado, "D", distanciaHeuristica(xAct + 1, yAct, xFinal, yFinal));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct + 1][xAct + 1] != 9) {
-            mov.add(new Estado(xAct+1, yAct+1, acumulado, Movimiento.ABAJO_DERECHA,
-                    distanciaHeuristica(xAct + 1, yAct + 1, xFinal, yFinal)));
+            e = new Estado(xAct + 1, yAct + 1, acumulado, "BD",
+                    distanciaHeuristica(xAct + 1, yAct + 1, xFinal, yFinal));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct + 1][xAct] != 9) {
-            mov.add(new Estado(xAct, yAct+1, acumulado, Movimiento.ABAJO,
-                    distanciaHeuristica(xAct, yAct + 1, xFinal, yFinal)));
+            e = new Estado(xAct, yAct + 1, acumulado, "B", distanciaHeuristica(xAct, yAct + 1, xFinal, yFinal));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct + 1][xAct - 1] != 9) {
-            mov.add(new Estado(xAct-1, yAct+1, acumulado, Movimiento.ABAJO_IZQUIERDA,
-                    distanciaHeuristica(xAct - 1, yAct + 1, xFinal, yFinal)));
+            e = new Estado(xAct - 1, yAct + 1, acumulado, "BI",
+                    distanciaHeuristica(xAct - 1, yAct + 1, xFinal, yFinal));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct][xAct - 1] != 9) {
-            mov.add(new Estado(xAct-1, yAct, acumulado, Movimiento.IZQUIERDA,
-                    distanciaHeuristica(xAct - 1, yAct, xFinal, yFinal)));
+            e = new Estado(xAct - 1, yAct, acumulado, "I", distanciaHeuristica(xAct - 1, yAct, xFinal, yFinal));
+            if (!existe(e))
+                mov.add(e);
         }
         if (Mat[yAct - 1][xAct - 1] != 9) {
-            mov.add(new Estado(xAct-1, yAct-1, acumulado, Movimiento.ARRIBA_IZQUIERDA,
-                    distanciaHeuristica(xAct - 1, yAct - 1, xFinal, yFinal)));
+            e = new Estado(xAct - 1, yAct - 1, acumulado, "AI",
+                    distanciaHeuristica(xAct - 1, yAct - 1, xFinal, yFinal));
+            if (!existe(e))
+                mov.add(e);
         }
         return mov;
     }
 
-    public void actualizarH(){
+    public void actualizarH() {
         Moneda m;
-        for(int i = 0; i < monedas.size(); i++){
+        for (int i = 0; i < monedas.size(); i++) {
             m = monedas.get(i);
-            m.setH(distanciaHeuristica(xAct, yAct, m.getX(), m.getY()));
+            m.setH(distanciaHeuristica(xAct, yAct, m.getX(), m.getY()) - m.getValor());
         }
     }
 
-    public boolean sol(){
-        if(xAct != xFinal)
+    public boolean sol() {
+        if (xAct != xFinal)
             return false;
-        if(yAct != yFinal)
+        if (yAct != yFinal)
             return false;
         return true;
     }
 
     public void solve() {
-
         Moneda m = monedas.get(0);
         while (acumulado < precio) {
             Estado e;
             List<Estado> mov = getPosiblesMonedas(m);
             Collections.sort(mov, new ComparadorH());
-            e = mov.get(0); 
-            xAct += e.getM().getX();
-            yAct += e.getM().getY();
-            System.out.println(e.getM().getM());
+            e = mov.get(0);
+            xAct = e.getX();
+            yAct = e.getY();
+            System.out.println(e.getM());
             estados.add(e);
             if (xAct == m.getX() && yAct == m.getY()) {
                 acumulado += m.getValor();
@@ -210,22 +246,22 @@ public class Tablero {
             Estado e;
             List<Estado> mov = getPosiblesSalida();
             Collections.sort(mov, new ComparadorH());
-            e = mov.get(0); 
-            xAct += e.getM().getX();
-            yAct += e.getM().getY();
-            System.out.println(e.getM().getM());
+            e = mov.get(0);
+            xAct = e.getX();
+            yAct = e.getY();
+            System.out.println(e.getM());
             estados.add(e);
         }
 
         System.out.println(xAct + " " + yAct);
 
         for (int i = 1; i < estados.size(); i++) {
-            System.out.print(estados.get(i).getM().getM());
+            System.out.print(estados.get(i).getM());
             if (i != estados.size() - 1)
                 System.out.print(",");
         }
 
-        System.out.println(yFinal + " " + xFinal);
+        System.out.println(xFinal + " " + yFinal);
     }
 
 }

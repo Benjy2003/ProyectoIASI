@@ -2,10 +2,10 @@ public class Estado {
     private int x;
     private int y;
     private int acumulado;
-    private Movimiento m;
+    private String m;
     private double h;
 
-    public Estado(int x, int y, int acumulado, Movimiento m, double h) {
+    public Estado(int x, int y, int acumulado, String m, double h) {
         this.x = x;
         this.y = y;
         this.m = m;
@@ -28,7 +28,7 @@ public class Estado {
         return acumulado;
     }
 
-    public Movimiento getM() {
+    public String getM() {
         return m;
     }
 
