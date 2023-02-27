@@ -4,7 +4,6 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 
 public class Tablero {
     private final static int N = 10;
@@ -29,7 +28,7 @@ public class Tablero {
         estados = new ArrayList<>();
         cargarDatos();
         for (int i = 0; i < monedas.size(); i++) {
-            monedas.get(i).setH(distanciaHeuristica(xInicial, yInicial, monedas.get(i).getX(), monedas.get(i).getY()) - monedas.get(i).getValor());
+            monedas.get(i).setH(distanciaHeuristica(xInicial, yInicial, monedas.get(i).getX(), monedas.get(i).getY()));
 
         }
         Collections.sort(monedas, new ComparadorMoneda());
@@ -41,7 +40,7 @@ public class Tablero {
 
     private void cargarDatos() {
         try {
-            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN1.txt")));
+            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN10.txt")));
             String dato;
             String[] numeros;
 
@@ -210,7 +209,7 @@ public class Tablero {
         Moneda m;
         for (int i = 0; i < monedas.size(); i++) {
             m = monedas.get(i);
-            m.setH(distanciaHeuristica(xAct, yAct, m.getX(), m.getY()) - m.getValor());
+            m.setH(distanciaHeuristica(xAct, yAct, m.getX(), m.getY()));
         }
     }
 
@@ -232,14 +231,17 @@ public class Tablero {
             xAct = e.getX();
             yAct = e.getY();
             System.out.println(e.getM());
-            estados.add(e);
             if (xAct == m.getX() && yAct == m.getY()) {
                 acumulado += m.getValor();
+                e.setAcumulado(acumulado);
                 monedas.remove(0);
                 actualizarH();
-                Collections.sort(monedas, new ComparadorMoneda());
-                m = monedas.get(0);
+                if(monedas.size() != 0){
+                    Collections.sort(monedas, new ComparadorMoneda());
+                    m = monedas.get(0);
+                }
             }
+            estados.add(e);
         }
 
         while (!sol()) {
@@ -253,15 +255,11 @@ public class Tablero {
             estados.add(e);
         }
 
-        System.out.println(xAct + " " + yAct);
-
         for (int i = 1; i < estados.size(); i++) {
             System.out.print(estados.get(i).getM());
             if (i != estados.size() - 1)
                 System.out.print(",");
         }
-
-        System.out.println(xFinal + " " + yFinal);
     }
 
 }
