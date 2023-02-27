@@ -40,7 +40,7 @@ public class Tablero {
 
     private void cargarDatos() {
         try {
-            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN10.txt")));
+            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN2.txt")));
             String dato;
             String[] numeros;
 
@@ -82,8 +82,22 @@ public class Tablero {
         }
     }
 
-    public void mostrar(Ventana v) {
-        v.iniciarComponentes(Mat, precio);
+    public void mostrar() {
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < N; j++){
+                System.out.print(Mat[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        System.out.println("Precio: " + precio);
+        System.out.print("Una posible solución:");
+
+        for (int i = 1; i < estados.size(); i++) {
+            System.out.print(estados.get(i).getM());
+            if (i != estados.size() - 1)
+                System.out.print(",");
+        }
     }
 
     public double distanciaHeuristica(int xOri, int yOri, int xDest, int yDest) {
@@ -230,7 +244,6 @@ public class Tablero {
             e = mov.get(0);
             xAct = e.getX();
             yAct = e.getY();
-            System.out.println(e.getM());
             if (xAct == m.getX() && yAct == m.getY()) {
                 acumulado += m.getValor();
                 e.setAcumulado(acumulado);
@@ -251,14 +264,7 @@ public class Tablero {
             e = mov.get(0);
             xAct = e.getX();
             yAct = e.getY();
-            System.out.println(e.getM());
             estados.add(e);
-        }
-
-        for (int i = 1; i < estados.size(); i++) {
-            System.out.print(estados.get(i).getM());
-            if (i != estados.size() - 1)
-                System.out.print(",");
         }
     }
 

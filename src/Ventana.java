@@ -7,7 +7,7 @@ import java.awt.Font;
 
 public class Ventana extends JFrame
 {
-     public Ventana()
+    public Ventana()
     {   
         setSize(600, 600);              //Establece el tamaño de la ventana.
         setLocationRelativeTo(null);               //Situa la pantalla en el centro de la pantalla.
