@@ -1,11 +1,11 @@
-public class Estado {
+public class EstadoMP {
     private int x;
     private int y;
     private int acumulado;
     private String m;
     private double h;
 
-    public Estado(int x, int y, int acumulado, String m, double h) {
+    public EstadoMP(int x, int y, int acumulado, String m, double h) {
         this.x = x;
         this.y = y;
         this.m = m;

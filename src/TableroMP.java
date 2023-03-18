@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Tablero {
+public class TableroMP {
     private final static int N = 10;
     private int Mat[][];
     private List<Moneda> monedas;
-    private List<Estado> estados;
+    private List<EstadoMP> estados;
 
     private int precio; // Precio necesario para poder terminar.
     private int acumulado; // Acumulado actual.
@@ -20,10 +20,15 @@ public class Tablero {
     private int yAct;
     private int xFinal; // Posición objetivo del robot.
     private int yFinal; // Posición objetivo del robot.
+    private long tiempo;
+    private int nodos;
+    private boolean seguir;
 
-    public Tablero() {
+    public TableroMP() {
         Mat = new int[N][N];
         acumulado = 0;
+        nodos = 0;
+        seguir = true;
         monedas = new ArrayList<>();
         estados = new ArrayList<>();
         cargarDatos();
@@ -32,7 +37,7 @@ public class Tablero {
 
         }
         Collections.sort(monedas, new ComparadorMoneda());
-        estados.add(new Estado(xInicial, yInicial, acumulado, "Estado inicial",
+        estados.add(new EstadoMP(xInicial, yInicial, acumulado, "Estado inicial",
                 distanciaHeuristica(xInicial, yInicial, xFinal, yFinal)));
         xAct = xInicial;
         yAct = yInicial;
@@ -83,21 +88,28 @@ public class Tablero {
     }
 
     public void mostrar() {
-        for(int i = 0; i < N; i++){
-            for(int j = 0; j < N; j++){
+        System.out.println("Algoritmo Heuristico Máxima Pendiente");
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
                 System.out.print(Mat[i][j] + " ");
             }
             System.out.println();
         }
 
         System.out.println("Precio: " + precio);
-        System.out.print("Una posible solución:");
+        if (seguir) {
+            System.out.print("Una posible solución:");
 
-        for (int i = 1; i < estados.size(); i++) {
-            System.out.print(estados.get(i).getM());
-            if (i != estados.size() - 1)
-                System.out.print(",");
-        }
+            for (int i = 1; i < estados.size(); i++) {
+                System.out.print(estados.get(i).getM());
+                if (i != estados.size() - 1)
+                    System.out.print(",");
+            }
+            System.out.println();
+        } else
+            System.out.println("No hay solución");
+        System.out.println("Tiempo invertido (ms): " + tiempo);
+        System.out.println("Nodos investigados: " + nodos);
     }
 
     public double distanciaHeuristica(int xOri, int yOri, int xDest, int yDest) {
@@ -108,8 +120,8 @@ public class Tablero {
         return res;
     }
 
-    public boolean existe(Estado e) {
-        for (Estado est : estados) {
+    public boolean existe(EstadoMP e) {
+        for (EstadoMP est : estados) {
             if (est.getH() == e.getH())
                 if (est.getX() == e.getX())
                     if (est.getY() == e.getY())
@@ -119,49 +131,60 @@ public class Tablero {
         return false;
     }
 
-    public List<Estado> getPosiblesMonedas(Moneda m) {
-        List<Estado> mov = new ArrayList<>();
-        Estado e;
+    public boolean esMejor(EstadoMP e) {
+        if (e.getH() < estados.get(estados.size() - 1).getH() && e.getAcumulado() <= estados.get(estados.size() - 1).getAcumulado()) {
+            return true;
+        } else {
+            if (e.getAcumulado() > estados.get(estados.size() - 1).getAcumulado()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<EstadoMP> getPosiblesMonedasMP(Moneda m) {
+        List<EstadoMP> mov = new ArrayList<>();
+        EstadoMP e;
         if (Mat[yAct - 1][xAct] != 9) {
-            e = new Estado(xAct, yAct - 1, acumulado, "A", distanciaHeuristica(xAct, yAct - 1, m.getX(), m.getY()));
+            e = new EstadoMP(xAct, yAct - 1, acumulado, "A", distanciaHeuristica(xAct, yAct - 1, m.getX(), m.getY()));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct - 1][xAct + 1] != 9) {
-            e = new Estado(xAct + 1, yAct - 1, acumulado, "AD",
+            e = new EstadoMP(xAct + 1, yAct - 1, acumulado, "AD",
                     distanciaHeuristica(xAct + 1, yAct - 1, m.getX(), m.getY()));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct][xAct + 1] != 9) {
-            e = new Estado(xAct + 1, yAct, acumulado, "D", distanciaHeuristica(xAct + 1, yAct, m.getX(), m.getY()));
+            e = new EstadoMP(xAct + 1, yAct, acumulado, "D", distanciaHeuristica(xAct + 1, yAct, m.getX(), m.getY()));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct + 1][xAct + 1] != 9) {
-            e = new Estado(xAct + 1, yAct + 1, acumulado, "BD",
+            e = new EstadoMP(xAct + 1, yAct + 1, acumulado, "BD",
                     distanciaHeuristica(xAct + 1, yAct + 1, m.getX(), m.getY()));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct + 1][xAct] != 9) {
-            e = new Estado(xAct, yAct + 1, acumulado, "B", distanciaHeuristica(xAct, yAct + 1, m.getX(), m.getY()));
+            e = new EstadoMP(xAct, yAct + 1, acumulado, "B", distanciaHeuristica(xAct, yAct + 1, m.getX(), m.getY()));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct + 1][xAct - 1] != 9) {
-            e = new Estado(xAct - 1, yAct + 1, acumulado, "BI",
+            e = new EstadoMP(xAct - 1, yAct + 1, acumulado, "BI",
                     distanciaHeuristica(xAct - 1, yAct + 1, m.getX(), m.getY()));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct][xAct - 1] != 9) {
-            e = new Estado(xAct - 1, yAct, acumulado, "I", distanciaHeuristica(xAct - 1, yAct, m.getX(), m.getY()));
+            e = new EstadoMP(xAct - 1, yAct, acumulado, "I", distanciaHeuristica(xAct - 1, yAct, m.getX(), m.getY()));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct - 1][xAct - 1] != 9) {
-            e = new Estado(xAct - 1, yAct - 1, acumulado, "AI",
+            e = new EstadoMP(xAct - 1, yAct - 1, acumulado, "AI",
                     distanciaHeuristica(xAct - 1, yAct - 1, m.getX(), m.getY()));
             if (!existe(e))
                 mov.add(e);
@@ -169,49 +192,49 @@ public class Tablero {
         return mov;
     }
 
-    public List<Estado> getPosiblesSalida() {
-        List<Estado> mov = new ArrayList<>();
-        Estado e;
+    public List<EstadoMP> getPosiblesSalidaMP() {
+        List<EstadoMP> mov = new ArrayList<>();
+        EstadoMP e;
         if (Mat[yAct - 1][xAct] != 9) {
-            e = new Estado(xAct, yAct - 1, acumulado, "A", distanciaHeuristica(xAct, yAct - 1, xFinal, yFinal));
+            e = new EstadoMP(xAct, yAct - 1, acumulado, "A", distanciaHeuristica(xAct, yAct - 1, xFinal, yFinal));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct - 1][xAct + 1] != 9) {
-            e = new Estado(xAct + 1, yAct - 1, acumulado, "AD",
+            e = new EstadoMP(xAct + 1, yAct - 1, acumulado, "AD",
                     distanciaHeuristica(xAct + 1, yAct - 1, xFinal, yFinal));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct][xAct + 1] != 9) {
-            e = new Estado(xAct + 1, yAct, acumulado, "D", distanciaHeuristica(xAct + 1, yAct, xFinal, yFinal));
+            e = new EstadoMP(xAct + 1, yAct, acumulado, "D", distanciaHeuristica(xAct + 1, yAct, xFinal, yFinal));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct + 1][xAct + 1] != 9) {
-            e = new Estado(xAct + 1, yAct + 1, acumulado, "BD",
+            e = new EstadoMP(xAct + 1, yAct + 1, acumulado, "BD",
                     distanciaHeuristica(xAct + 1, yAct + 1, xFinal, yFinal));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct + 1][xAct] != 9) {
-            e = new Estado(xAct, yAct + 1, acumulado, "B", distanciaHeuristica(xAct, yAct + 1, xFinal, yFinal));
+            e = new EstadoMP(xAct, yAct + 1, acumulado, "B", distanciaHeuristica(xAct, yAct + 1, xFinal, yFinal));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct + 1][xAct - 1] != 9) {
-            e = new Estado(xAct - 1, yAct + 1, acumulado, "BI",
+            e = new EstadoMP(xAct - 1, yAct + 1, acumulado, "BI",
                     distanciaHeuristica(xAct - 1, yAct + 1, xFinal, yFinal));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct][xAct - 1] != 9) {
-            e = new Estado(xAct - 1, yAct, acumulado, "I", distanciaHeuristica(xAct - 1, yAct, xFinal, yFinal));
+            e = new EstadoMP(xAct - 1, yAct, acumulado, "I", distanciaHeuristica(xAct - 1, yAct, xFinal, yFinal));
             if (!existe(e))
                 mov.add(e);
         }
         if (Mat[yAct - 1][xAct - 1] != 9) {
-            e = new Estado(xAct - 1, yAct - 1, acumulado, "AI",
+            e = new EstadoMP(xAct - 1, yAct - 1, acumulado, "AI",
                     distanciaHeuristica(xAct - 1, yAct - 1, xFinal, yFinal));
             if (!existe(e))
                 mov.add(e);
@@ -235,37 +258,51 @@ public class Tablero {
         return true;
     }
 
-    public void solve() {
+    public void maximaPendiente() {
+        tiempo = System.currentTimeMillis();
         Moneda m = monedas.get(0);
         while (acumulado < precio) {
-            Estado e;
-            List<Estado> mov = getPosiblesMonedas(m);
+            EstadoMP e;
+            List<EstadoMP> mov = getPosiblesMonedasMP(m);
             Collections.sort(mov, new ComparadorH());
-            e = mov.get(0);
-            xAct = e.getX();
-            yAct = e.getY();
-            if (xAct == m.getX() && yAct == m.getY()) {
-                acumulado += m.getValor();
-                e.setAcumulado(acumulado);
-                monedas.remove(0);
-                actualizarH();
-                if(monedas.size() != 0){
-                    Collections.sort(monedas, new ComparadorMoneda());
-                    m = monedas.get(0);
+            nodos += mov.size();
+            if (mov.size() != 0) {
+                e = mov.get(0);
+                xAct = e.getX();
+                yAct = e.getY();
+                if (xAct == m.getX() && yAct == m.getY()) {
+                    acumulado += m.getValor();
+                    e.setAcumulado(acumulado);
+                    monedas.remove(0);
+                    actualizarH();
+                    if (monedas.size() != 0) {
+                        Collections.sort(monedas, new ComparadorMoneda());
+                        m = monedas.get(0);
+                    }
+                }
+                estados.add(e);
+            } else {
+                seguir = false;
+                break;
+            }
+        }
+        if (seguir) {
+            while (!sol()) {
+                EstadoMP e;
+                List<EstadoMP> mov = getPosiblesSalidaMP();
+                Collections.sort(mov, new ComparadorH());
+                nodos += mov.size();
+                if (mov.size() != 0) {
+                    e = mov.get(0);
+                    xAct = e.getX();
+                    yAct = e.getY();
+                    estados.add(e);
+                } else {
+                    break;
                 }
             }
-            estados.add(e);
         }
-
-        while (!sol()) {
-            Estado e;
-            List<Estado> mov = getPosiblesSalida();
-            Collections.sort(mov, new ComparadorH());
-            e = mov.get(0);
-            xAct = e.getX();
-            yAct = e.getY();
-            estados.add(e);
-        }
+        tiempo = System.currentTimeMillis() - tiempo;
     }
 
 }
