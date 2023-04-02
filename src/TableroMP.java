@@ -45,7 +45,7 @@ public class TableroMP {
 
     private void cargarDatos() {
         try {
-            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN2.txt")));
+            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN7.txt")));
             String dato;
             String[] numeros;
 
@@ -132,7 +132,7 @@ public class TableroMP {
     }
 
     public boolean esMejor(EstadoMP e) {
-        if (e.getH() < estados.get(estados.size() - 1).getH() && e.getAcumulado() <= estados.get(estados.size() - 1).getAcumulado()) {
+        if (e.getH() < estados.get(estados.size() - 1).getH()) {
             return true;
         } else {
             if (e.getAcumulado() > estados.get(estados.size() - 1).getAcumulado()) {
@@ -267,20 +267,30 @@ public class TableroMP {
             Collections.sort(mov, new ComparadorH());
             nodos += mov.size();
             if (mov.size() != 0) {
-                e = mov.get(0);
-                xAct = e.getX();
-                yAct = e.getY();
-                if (xAct == m.getX() && yAct == m.getY()) {
-                    acumulado += m.getValor();
-                    e.setAcumulado(acumulado);
-                    monedas.remove(0);
-                    actualizarH();
-                    if (monedas.size() != 0) {
-                        Collections.sort(monedas, new ComparadorMoneda());
-                        m = monedas.get(0);
+                for (int i = 0; i < mov.size(); i++) {
+                    e = mov.get(0);
+                    if (esMejor(e)) {
+                        xAct = e.getX();
+                        yAct = e.getY();
+                        if (xAct == m.getX() && yAct == m.getY()) {
+                            acumulado += m.getValor();
+                            e.setAcumulado(acumulado);
+                            monedas.remove(0);
+                            actualizarH();
+                            if (monedas.size() != 0) {
+                                Collections.sort(monedas, new ComparadorMoneda());
+                                m = monedas.get(0);
+                            }
+                            if (acumulado < precio) {
+                                e.setH(distanciaHeuristica(xAct, yAct, m.getX(), m.getY()));
+                            } else {
+                                e.setH(distanciaHeuristica(xAct, yAct, xFinal, yFinal));
+                            }
+                        }
+                        estados.add(e);
+                        break;
                     }
                 }
-                estados.add(e);
             } else {
                 seguir = false;
                 break;
@@ -294,9 +304,11 @@ public class TableroMP {
                 nodos += mov.size();
                 if (mov.size() != 0) {
                     e = mov.get(0);
-                    xAct = e.getX();
-                    yAct = e.getY();
-                    estados.add(e);
+                    if (esMejor(e)) {
+                        xAct = e.getX();
+                        yAct = e.getY();
+                        estados.add(e);
+                    }
                 } else {
                     break;
                 }

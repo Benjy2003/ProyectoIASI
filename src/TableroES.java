@@ -30,6 +30,7 @@ public class TableroES {
         nodos = 0;
         monedas = new ArrayList<>();
         estados = new ArrayList<>();
+        seguir = true;
         cargarDatos();
         for (int i = 0; i < monedas.size(); i++) {
             monedas.get(i).setH(distanciaHeuristica(xInicial, yInicial, monedas.get(i).getX(), monedas.get(i).getY()));
@@ -37,7 +38,7 @@ public class TableroES {
         }
         Collections.sort(monedas, new ComparadorMoneda());
         estados.add(new EstadoES(xInicial, yInicial, acumulado, "Estado inicial",
-                distanciaHeuristica(xInicial, yInicial, xFinal, yFinal)));
+                distanciaHeuristica(xInicial, yInicial, monedas.get(0).getX(), monedas.get(0).getY())));
 
         xAct = xInicial;
         yAct = yInicial;
@@ -45,7 +46,7 @@ public class TableroES {
 
     private void cargarDatos() {
         try {
-            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN2.txt")));
+            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN7.txt")));
             String dato;
             String[] numeros;
 
@@ -132,7 +133,7 @@ public class TableroES {
     }
 
     public boolean esMejor(EstadoES e) {
-        if (e.getH() <= estados.get(estados.size() - 1).getH() && e.getAcumulado() <= estados.get(estados.size() - 1).getAcumulado()) {
+        if (e.getH() < estados.get(estados.size() - 1).getH()) {
             return true;
         } else {
             if (e.getAcumulado() > estados.get(estados.size() - 1).getAcumulado()) {
@@ -295,7 +296,7 @@ public class TableroES {
         Moneda m = monedas.get(0);
         while (acumulado < precio) {
             EstadoES e;
-            List<EstadoES> mov = getPosiblesMonedasES(m); Collections.sort(mov, new ComparadorHES());
+            List<EstadoES> mov = getPosiblesMonedasES(m); 
             nodos += mov.size();
             if (mov.size() != 0) {
                 e = mov.get(0);
@@ -310,6 +311,11 @@ public class TableroES {
                         Collections.sort(monedas, new ComparadorMoneda());
                         m = monedas.get(0);
                     }
+                    if(acumulado < precio){
+                        e.setH(distanciaHeuristica(xAct, yAct, m.getX(), m.getY()));
+                    }else{
+                        e.setH(distanciaHeuristica(xAct, yAct, xFinal, yFinal));
+                    }
                 }
                 estados.add(e);
             } else {
@@ -321,10 +327,10 @@ public class TableroES {
             while (!sol()) {
                 EstadoES e;
                 List<EstadoES> mov = getPosiblesSalidaES();
-                Collections.sort(mov, new ComparadorHES());
                 nodos += mov.size();
                 if (mov.size() != 0) {
                     e = mov.get(0);
+                    System.out.print(e.getM() + " ");
                     xAct = e.getX();
                     yAct = e.getY();
                     estados.add(e);

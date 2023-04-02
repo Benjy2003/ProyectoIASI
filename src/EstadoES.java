@@ -39,4 +39,8 @@ public class EstadoES {
     public void setAcumulado(int acumulado) {
         this.acumulado = acumulado;
     }
+
+    public void setH(double h) {
+        this.h = h;
+    }
 }
