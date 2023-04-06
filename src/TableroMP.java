@@ -45,7 +45,7 @@ public class TableroMP {
 
     private void cargarDatos() {
         try {
-            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN7.txt")));
+            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN3.txt")));
             String dato;
             String[] numeros;
 
