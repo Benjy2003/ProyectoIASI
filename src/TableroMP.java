@@ -45,7 +45,7 @@ public class TableroMP {
 
     private void cargarDatos() {
         try {
-            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN3.txt")));
+            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN10.txt")));
             String dato;
             String[] numeros;
 
@@ -107,7 +107,7 @@ public class TableroMP {
             }
             System.out.println();
         } else
-            System.out.println("No hay solución");
+            System.out.println("Solución no encontrada");
         System.out.println("Tiempo invertido (ms): " + tiempo);
         System.out.println("Nodos investigados: " + nodos);
     }
@@ -263,11 +263,13 @@ public class TableroMP {
         Moneda m = monedas.get(0);
         while (acumulado < precio) {
             EstadoMP e;
+            int tam = 0;
             List<EstadoMP> mov = getPosiblesMonedasMP(m);
             Collections.sort(mov, new ComparadorH());
             nodos += mov.size();
             if (mov.size() != 0) {
-                for (int i = 0; i < mov.size(); i++) {
+                tam = mov.size();
+                for (int i = 0; i < tam; i++) {
                     e = mov.get(0);
                     if (esMejor(e)) {
                         xAct = e.getX();
@@ -289,7 +291,13 @@ public class TableroMP {
                         }
                         estados.add(e);
                         break;
+                    } else {
+                        mov.remove(0);
                     }
+                }
+                if (mov.size() == 0) {
+                    seguir = false;
+                    break;
                 }
             } else {
                 seguir = false;
@@ -299,15 +307,25 @@ public class TableroMP {
         if (seguir) {
             while (!sol()) {
                 EstadoMP e;
+                int tam = 0;
                 List<EstadoMP> mov = getPosiblesSalidaMP();
                 Collections.sort(mov, new ComparadorH());
                 nodos += mov.size();
                 if (mov.size() != 0) {
-                    e = mov.get(0);
-                    if (esMejor(e)) {
-                        xAct = e.getX();
-                        yAct = e.getY();
-                        estados.add(e);
+                    tam = mov.size();
+                    for (int i = 0; i < tam; i++) {
+                        e = mov.get(0);
+                        if (esMejor(e)) {
+                            xAct = e.getX();
+                            yAct = e.getY();
+                            estados.add(e);
+                        }else{
+                            mov.remove(0);
+                        }
+                    }
+                    if(mov.size() == 0){
+                        seguir = false;
+                        break;
                     }
                 } else {
                     break;
