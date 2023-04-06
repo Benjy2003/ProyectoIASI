@@ -46,7 +46,7 @@ public class TableroES {
 
     private void cargarDatos() {
         try {
-            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN3.txt")));
+            Scanner scanner = new Scanner(new FileReader(new File("LABECOIN10.txt")));
             String dato;
             String[] numeros;
 
@@ -108,7 +108,7 @@ public class TableroES {
             }
             System.out.println();
         } else
-            System.out.println("No hay solución");
+            System.out.println("Solución no encontrada");
         System.out.println("Tiempo invertido (ms): " + tiempo);
         System.out.println("Nodos investigados: " + nodos);
     }
@@ -335,6 +335,7 @@ public class TableroES {
                     yAct = e.getY();
                     estados.add(e);
                 } else {
+                    seguir = false;
                     break;
                 }
             }
