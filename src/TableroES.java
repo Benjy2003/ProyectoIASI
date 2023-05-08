@@ -330,7 +330,6 @@ public class TableroES {
                 nodos += mov.size();
                 if (mov.size() != 0) {
                     e = mov.get(0);
-                    System.out.print(e.getM() + " ");
                     xAct = e.getX();
                     yAct = e.getY();
                     estados.add(e);
